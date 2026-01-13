@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echo 2.5", "Echo 2.5\Echo 2.5.csproj", "{EF7E51BB-CB88-4D5C-9161-A9257CA1192E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF7E51BB-CB88-4D5C-9161-A9257CA1192E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF7E51BB-CB88-4D5C-9161-A9257CA1192E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF7E51BB-CB88-4D5C-9161-A9257CA1192E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF7E51BB-CB88-4D5C-9161-A9257CA1192E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1936583A-CDAF-4D7A-903F-A896D5CFFEBC}
+	EndGlobalSection
+EndGlobal
