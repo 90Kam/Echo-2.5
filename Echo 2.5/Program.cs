@@ -37,10 +37,10 @@ internal class Program
         webDriver.Navigate().GoToUrl("https://auth.platform.trans.eu/accounts/login?login_challenge=6718dfa6b2be49409600c3acb63342a2");
         webDriver.Manage().Window.Maximize();
         Thread.Sleep(10000);
-        webDriver.FindElement(By.Name("login")).SendKeys("1172359-14");
+        webDriver.FindElement(By.Name("login")).SendKeys("...");
         IWebElement webElement = webDriver.FindElement(By.Name("password"));
         Thread.Sleep(5000);
-        webElement.SendKeys("Romanbit111!");
+        webElement.SendKeys("...");
         IWebElement webElement2 = webDriver.FindElement(By.XPath("//button[text()='Zaloguj']"));
         Thread.Sleep(5000);
         if (webElement2.Enabled)
