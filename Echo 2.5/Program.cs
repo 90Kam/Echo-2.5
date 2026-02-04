@@ -78,7 +78,8 @@ internal class Program
                     try
                     {
                         Thread.Sleep(millisecondsTimeout);
-                        string xpathToFind = $"//*[@id='app']/div/div/div/div[1]/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]";
+                        //string xpathToFind = $"//*[@id='app']/div/div/div/div[1]/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]";
+                        string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/div/a";
                         IWebElement webElement3 = webDriver.FindElement(By.XPath(xpathToFind));
                         Thread.Sleep(millisecondsTimeout);
                         webElement3.Click();
