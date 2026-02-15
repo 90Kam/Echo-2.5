@@ -3,6 +3,7 @@ using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;  // DODANE dla Wait
 
 internal class Program
 {
@@ -13,7 +14,7 @@ internal class Program
         IWebDriver webDriver = null;
         while (webDriver == null)
         {
-            Console.WriteLine("Na której przeglądarce chcesz pracować?\r\n                Google Chrome - wpisz '1'\r\n                Mozilla Firefox - wpisz '2'");
+            Console.WriteLine("Na której przeglądarce chcesz pracować?              Google Chrome - wpisz '1'           Mozilla Firefox - wpisz '2'");
             string text = Console.ReadLine();
             Console.WriteLine("Podaj liczbę frachtów do odświeżenia: ");
             num = int.Parse(Console.ReadLine());
@@ -62,37 +63,56 @@ internal class Program
         Thread.Sleep(15000);
         webDriver.FindElement(By.LinkText("Frachty")).Click();
         Thread.Sleep(5000);
-        _ = (IJavaScriptExecutor)webDriver;
+        var jsExecutor = (IJavaScriptExecutor)webDriver;  // Poprawione
+        var wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(15));  // NOWE: Wait
+
         while (true)
         {
             Console.WriteLine("POCZĄTEK SESJI ODŚWIEŻANIA");
             webDriver.Navigate().Refresh();
             Thread.Sleep(9000);
             Console.WriteLine("Strona została odświeżona");
-            for (int i = 1; i <= num; i++)
+
+            // POPRAWIONA PĘTLA - zastępuje starą for
+            int current = 1;
+            while (current <= num)
             {
                 Thread.Sleep(millisecondsTimeout);
                 bool flag = false;
-                while (!flag)
+                while (!flag && current <= num)
                 {
                     try
                     {
-                        Thread.Sleep(millisecondsTimeout);
-                        ///html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[1]/td[9]/div/div/div[3]/a/svg/path
-                        string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/a";
-                        //string xpathToFind = $"//*[@id='app']/div/div/div/div[1]/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]";
-                        //string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/a/svg";
-                        //string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/div/a";
-                        IWebElement webElement3 = webDriver.FindElement(By.XPath(xpathToFind));
-                        Thread.Sleep(millisecondsTimeout);
-                        Thread.Sleep(1000);
-                        webElement3.Click();
-                        flag = true;
-                        Console.WriteLine("Odświeżono fracht nr: " + (i - 1));
+                        // SCROLL - ładuje virtual listę
+                        jsExecutor.ExecuteScript("window.scrollBy(0, 600);");
+                        Thread.Sleep(1500);
+
+                        // NOWY RELATYWNY XPATH - szuka wszystkich przycisków resubmit/odśwież
+                        string xpathToFind = "//a[contains(@class, 'resubmit') or contains(@data-ctx, 'resubmit') or contains(@href, 'resubmit')] | //button[contains(text(), 'Odśwież') or contains(text(), 'Refresh') or contains(@aria-label, 'odśwież')]";
+
+                        var buttons = wait.Until(d => d.FindElements(By.XPath(xpathToFind)));
+
+                        if (buttons.Count >= current)
+                        {
+                            var btn = buttons[current - 1];
+                            wait.Until(d => btn.Displayed && btn.Enabled);
+                            btn.Click();
+                            flag = true;
+                            Console.WriteLine($"Odświeżono fracht {current - 1} (znaleziono {buttons.Count} przycisków)");
+                            current++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Za mało przycisków ({buttons.Count} < {current}) - REFRESH");
+                            webDriver.Navigate().Refresh();
+                            Thread.Sleep(3000);
+                        }
                     }
                     catch (NoSuchElementException)
                     {
-                        Console.WriteLine($"Nie znaleziono przycisku dla XPath z indeksu: {i}");
+                        Console.WriteLine($"Brak przycisku {current} - REFRESH");
+                        webDriver.Navigate().Refresh();
+                        Thread.Sleep(2000);
                         flag = true;
                     }
                     catch (ElementClickInterceptedException)
@@ -100,31 +120,23 @@ internal class Program
                         try
                         {
                             Thread.Sleep(1000);
-                            
-                            //IWebElement webElement4 = webDriver.FindElement(By.CssSelector("div#app>div>div>div>div:nth-of-type(9)>div>div>div>div>button>span"));
-                            IWebElement webElement4 = webDriver.FindElement(By.XPath("/html/body/div[1]/div/div/div/div[10]/div[1]/div/div/div[1]/button"));
-                            Thread.Sleep(1000);
-                            webElement4.Click();
-                            Console.WriteLine($"Przycisk dla XPath z indeksu: {i} jest blokowany przez inny element.");
-                            Thread.Sleep(1000);
+                            var fallback = wait.Until(d => d.FindElement(By.XPath("//button[contains(text(), 'Odśwież')] | //*[contains(text(), 'Refresh')] | /html/body/div[1]/div/div/div/div[10]/div/button")));
+                            fallback.Click();
+                            Console.WriteLine($"Fallback dla {current}");
                         }
-                        catch (NoSuchElementException)
-                        {
-                            Console.WriteLine($"Nie znaleziono elementu blokującego dla XPath z indeksu: {i}");
-                            flag = true;
-                        }
+                        catch { Console.WriteLine("Fallback fail"); }
+                        flag = true;
                     }
-                    catch (Exception ex4)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Wystąpił błąd: " + ex4.Message);
+                        Console.WriteLine($"Błąd {current}: {ex.Message}");
                         flag = true;
                     }
                 }
             }
+
             Console.WriteLine("KONIEC SESJI ODŚWIEŻANIA");
-            Thread.Sleep(500);
-            Thread.Sleep(2000);
-            Thread.Sleep(900000);
+            Thread.Sleep(900000);  // 15 min pauza
         }
     }
 }
