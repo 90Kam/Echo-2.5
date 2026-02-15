@@ -37,10 +37,10 @@ internal class Program
         webDriver.Navigate().GoToUrl("https://auth.platform.trans.eu/accounts/login?login_challenge=6718dfa6b2be49409600c3acb63342a2");
         webDriver.Manage().Window.Maximize();
         Thread.Sleep(10000);
-        webDriver.FindElement(By.Name("login")).SendKeys("...");
+        webDriver.FindElement(By.Name("login")).SendKeys("1172359-14");
         IWebElement webElement = webDriver.FindElement(By.Name("password"));
         Thread.Sleep(5000);
-        webElement.SendKeys("...");
+        webElement.SendKeys("Romanbit111!");
         IWebElement webElement2 = webDriver.FindElement(By.XPath("//button[text()='Zaloguj']"));
         Thread.Sleep(5000);
         if (webElement2.Enabled)
@@ -78,10 +78,14 @@ internal class Program
                     try
                     {
                         Thread.Sleep(millisecondsTimeout);
+                        ///html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[1]/td[9]/div/div/div[3]/a/svg/path
+                        string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/a";
                         //string xpathToFind = $"//*[@id='app']/div/div/div/div[1]/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]";
-                        string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/div/a";
+                        //string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/a/svg";
+                        //string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/div/a";
                         IWebElement webElement3 = webDriver.FindElement(By.XPath(xpathToFind));
                         Thread.Sleep(millisecondsTimeout);
+                        Thread.Sleep(1000);
                         webElement3.Click();
                         flag = true;
                         Console.WriteLine("Odświeżono fracht nr: " + (i - 1));
@@ -96,7 +100,9 @@ internal class Program
                         try
                         {
                             Thread.Sleep(1000);
-                            IWebElement webElement4 = webDriver.FindElement(By.CssSelector("div#app>div>div>div>div:nth-of-type(9)>div>div>div>div>button>span"));
+                            
+                            //IWebElement webElement4 = webDriver.FindElement(By.CssSelector("div#app>div>div>div>div:nth-of-type(9)>div>div>div>div>button>span"));
+                            IWebElement webElement4 = webDriver.FindElement(By.XPath("/html/body/div[1]/div/div/div/div[10]/div[1]/div/div/div[1]/button"));
                             Thread.Sleep(1000);
                             webElement4.Click();
                             Console.WriteLine($"Przycisk dla XPath z indeksu: {i} jest blokowany przez inny element.");
