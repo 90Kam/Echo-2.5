@@ -85,7 +85,7 @@ internal class Program
                         //string xpathToFind = $"/html/body/div[1]/div/div/div/div[1]/article/div[2]/div/div/div[2]/div/table[2]/tbody/tr[{i}]/td[9]/div/div/div[3]/div/a";
                         IWebElement webElement3 = webDriver.FindElement(By.XPath(xpathToFind));
                         Thread.Sleep(millisecondsTimeout);
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1000);
                         webElement3.Click();
                         flag = true;
                         Console.WriteLine("Odświeżono fracht nr: " + (i - 1));

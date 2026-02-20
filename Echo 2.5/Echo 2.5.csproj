@@ -6,6 +6,9 @@
     <RootNamespace>Echo_2._5</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
